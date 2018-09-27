@@ -1,0 +1,41 @@
+-- This file has been generated from package.yaml by hpack version 0.28.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: c58b8ebf46c25140ab53847813ef162080ac41978a79b42a295ef3706e96d1ee
+
+name:           eleanor
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/wenkokke/eleanor#readme>
+homepage:       https://github.com/wenkokke/eleanor#readme
+bug-reports:    https://github.com/wenkokke/eleanor/issues
+author:         Wen Kokke
+maintainer:     wen.kokke@gmail.com
+copyright:      Copyright (C) 2018 Wen Kokke
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+extra-source-files:
+    ChangeLog.md
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/wenkokke/eleanor
+
+library
+  exposed-modules:
+      Lib
+  other-modules:
+      Paths_eleanor
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , lazy-search
+    , monad-supply
+    , size-based
+    , testing-feat
+    , vector
+  default-language: Haskell2010
