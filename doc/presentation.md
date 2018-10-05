@@ -1,5 +1,7 @@
 # [fit] Where the linear lambdas go
 
+## by Wen Kokke
+
 ---
 
 ![Me, reading a cool paper by Simon Fowler](cat-reading.jpg)
@@ -188,7 +190,7 @@ fn ping_works() {
     instance Arbitrary n => Arbitrary (Term n) where
         arbitrary = oneof
             [ Var <$> arbitrary
-            , Lam <$> arbitrary <*> arbitrary
+            , Lam <$> arbitrary
             , App <$> aribtrary <*> arbitrary
             ]
 ```
@@ -325,7 +327,7 @@ fn ping_works() {
         enumerate = datatype [] -- no longer a lie
 
     instance Enumerable n => Enumerable (S n) where
-        enumerate = datatype [ pay (v0 FZ) , pay (v1 FS) ]
+        enumerate = datatype [ v0 FZ , v1 FS ]
 
     instance Enumerable Type where
         enumerate = datatype [ v0 Void , v2 (:->) ]
@@ -343,7 +345,7 @@ fn ping_works() {
     $ snd (valuesWith global !! 3)
     > [ Lam (Lam (Var FZ)) , Lam (Lam (Var (FS (FZ)))) ]
     
-    -- how many lambdas of size <100?
+    -- how many lambdas of size <30?
     $ sum (map fst (take 30 (valuesWith global)))
     > 7964948391145
     
@@ -358,15 +360,15 @@ fn ping_works() {
 
 ``` haskell
     test :: (a -> Bool) -> (b -> a) -> Maybe Bool
-    test p v = unsafePerformIO $ 
-        Just (p (v undefined)) `catch` \e -> Nothing
+    test pred val = unsafePerformIO $ 
+        Just (pred (val undefined)) `catch` \err -> Nothing
         
     -- will this lambda work out?
     $ test (check [] Void) (\hole -> Lam hole)
     > Just False -- no
    
     -- will this lambda work out?
-    $ test (check [] (a :-> b)) (\hole -> Lam (App hole) (Var FZ))
+    $ test (check [] (Void :-> Void)) (\hole -> Lam hole)
     > Nothing -- dunno
 ```
 
@@ -430,7 +432,7 @@ fn ping_works() {
 1. change the type of `env` to `[(Bool, Type)]`
    (so you can track whether stuff has been used)
    
-   :x: now checking isn't parallelizable any more!
+   :x: isn't parallelizable any more!
    
 2. try every possible split of the `env` at every `App`
    (so the variables *can* only be used once)
@@ -442,13 +444,13 @@ fn ping_works() {
 # I tried, it was
 
 ``` haskell
-check :: Fin n => [(n, Type)] -> Type -> Term n -> Bool
-check env a         (Var x)     = env == [(x, a)]
-check env (a :-> b) (Lam t)     = check ((FZ, a) : map (first FS) env) b t
-check env b         (App f s a) = or
-    [ check env1 (a :-> b) f && check env2 a s 
-    | n <- [0..length env] , (env1, env2) <- combinations n env]
-check _   _         _           = False
+checkLinear :: Fin n => [(n, Type)] -> Type -> Term n -> Bool
+checkLinear env a         (Var x)     = env == [(x, a)]
+checkLinear env (a :-> b) (Lam t)     = checkLinear ((FZ, a) : map (first FS) env) b t
+checkLinear env b         (App f s a) = or
+    [ checkLinear env1 (a :-> b) f && checkLinear env2 a s 
+    | n <- [0..length env] , (env1, env2) <- combinations n env ]
+checkLinear _   _         _           = False
 
 combinations :: Int -> [a] -> [([a], [a])]
 combinations 0 xs = [([], xs)]
@@ -515,3 +517,27 @@ $ length =<< search 30 (checkLinear [] (Void :-> Void))
 1. make linear lambdas
 2. give them type
 3. rest of my good plan
+
+---
+
+# How to make linear lambdas?
+
+1. make some BCIs and translate them
+   (is easy, but not complete :confused:)
+   (e.g. we don't get $$\lambda x.(\lambda y.y) \; x$$)
+2. use the structure of linear lambdas
+   (each term has $$n$$ lambdas, $$n$$ vars, and $$n - 1$$ apps)
+   (is hard, and may not scale well)
+
+---
+
+# [fit] Abrupt ending.
+
+---
+
+# What have we seen?
+
+1. generating random lambdas is hard
+2. there are some cool libraries out there to help you
+3. none of the tooling works for linear lambdas
+4. everything sucks

@@ -1,7 +1,11 @@
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE EmptyDataDeriving #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 module Lib where
+
+import Control.Monad.Supply (MonadSupply(..), Supply, evalSupply)
+import Debug.Trace (traceShow)
 
 data Z
   deriving (Eq, Show)
@@ -24,39 +28,63 @@ data Term n
   | Lam (Term (S n))
   | App (Term n) (Term n)
 
--- n lams
--- (n - 1) apps
--- n vars
--- every lam after the first one increases the size needed by two
--- first one increases the size by one
--- idea: keep track of the depth
-
-
-terms :: Int -> Int -> [n] -> [Term n]
-terms s d env
-  | s < 2 * d - 1 = []
-  | otherwise     = vars ++ lams ++ apps
+terms :: Show n => Int -> [n] -> [Term n]
+terms 0  _  = []
+terms 1 [n] = [Var n]
+terms s env = if s >= smin then lams ++ apps else []
   where
-    vars
-      | s == 1 && d == 1 = [Var (head env)]
-      | otherwise        = []
-    lams
-      | s >  2           = Lam <$> terms (s - 3) (d + 1) (FZ : map FS env)
-      | s == 2 && d == 0 = Lam <$> terms (s - 2)      1  [FZ]
-      | otherwise        = []
-    apps                 =
-      [ App t1 t2
-      | s1 <- [0..s - 1] , let s2 = s - s2
-      , d1 <- [0..d]     , let d2 = d - d1
-      , (env1, env2) <- combinations d1 env
-      , t1 <- terms s1 d1 env1
-      , t2 <- terms s2 d2 env2
-      ]
+    smin = 2 * length env - 1
+    lams = if s >= smin + 3 then Lam <$> terms (s - 1) (FZ : map FS env) else []
+    apps = do
+      (env1, env2) <- combinations env
+      s1 <- [0..s - 1]
+      let s2 = (s - 1) - s1
+      App <$> terms s1 env1 <*> terms s2 env2
 
-combinations :: Int -> [a] -> [([a], [a])]
-combinations 0 xs = [([], xs)]
-combinations n (x:xs) =
-  [ (x:xs, ys) | (xs, ys) <- combinations_xs ] ++
-  [ (xs, x:ys) | (xs, ys) <- combinations_xs ]
+combinations :: [a] -> [([a], [a])]
+combinations [] = [([],[])]
+combinations (x:xs) =
+  [ (x:xs1,   xs2) | (xs1, xs2) <- combinations_xs ] ++
+  [ (  xs1, x:xs2) | (xs1, xs2) <- combinations_xs ]
   where
-    combinations_xs = combinations (n - 1) xs
+    combinations_xs = combinations xs
+
+closed :: Int -> [Term Z]
+closed s = terms s []
+
+-- * Pretty printing
+
+type Name = String
+
+class Fin n where
+  toInt :: n -> Int
+
+instance Fin Z where
+  toInt _ = undefined
+
+instance Fin n => Fin (S n) where
+  toInt FZ = 0
+  toInt (FS n) = toInt n + 1
+
+pretty :: Fin n => [Name] -> Int -> Term n -> Supply Name ShowS
+pretty γ p (Var n) = do
+  let x = γ !! toInt n
+  return $
+    showString x
+pretty γ p (Lam t) = do
+  x <- supply
+  pretty_t <- pretty (x : γ) 4 t
+  return $
+    showParen (p >= 5) $
+      showChar 'λ' . showString x . showChar '.' . pretty_t
+pretty γ p (App f s) = do
+  pretty_f <- pretty γ 6 f
+  pretty_s <- pretty γ 7 s
+  return $
+    showParen (p >= 7) $
+      pretty_f . showChar ' ' . pretty_s
+
+instance Show (Term Z) where
+  showsPrec p t = evalSupply (pretty [] p t) names
+    where
+      names = [ 'x' : show i | i <- [0..] ]
