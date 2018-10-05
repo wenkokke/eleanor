@@ -27,15 +27,16 @@ dependencies:
 - lazy-search
 - monad-supply
 - QuickCheck
+- mtl
 
 library:
   source-dirs: src
 
-executable:
-  main: Main.hs
-  source-dirs: app/
-  dependencies:
-  - eleanor
-  - size-based
-  - testing-feat
-  - lazy-search
+# executable:
+#   main: Main.hs
+#   source-dirs: app/
+#   dependencies:
+#   - eleanor
+#   - size-based
+#   - testing-feat
+#   - lazy-search

@@ -2,7 +2,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE EmptyDataDeriving #-}
 {-# LANGUAGE DeriveDataTypeable #-}
-module Lib where
+module LLAM.Naive where
 
 import Control.Monad.Supply (MonadSupply(..), Supply, evalSupply)
 import Debug.Trace (traceShow)
