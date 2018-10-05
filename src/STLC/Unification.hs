@@ -5,6 +5,14 @@
 {-# LANGUAGE KindSignatures #-}
 module STLC.Unification where
 
+-- This module tries to answer the question:
+--
+--   "How do we generate a well-typed lambda term if we don't care which type it
+--   has?"
+--
+-- It has a naive implementation of an algorithm based on unification, called
+-- `exprs`, and an implementation of an incredibly naive algorithm for linear
+-- lambda terms, called `lexprs`.
 
 import Control.Arrow (first, second)
 import Control.Applicative (Alternative (..))
