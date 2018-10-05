@@ -21,6 +21,7 @@ description:         Please see the README on GitHub at <https://github.com/wenk
 
 dependencies:
 - base >= 4.7 && < 5
+- containers
 - vector
 - size-based
 - testing-feat
@@ -28,15 +29,16 @@ dependencies:
 - monad-supply
 - QuickCheck
 - mtl
+- transformers
 
 library:
   source-dirs: src
 
-# executable:
-#   main: Main.hs
-#   source-dirs: app/
-#   dependencies:
-#   - eleanor
-#   - size-based
-#   - testing-feat
-#   - lazy-search
+executable:
+  main: Main.hs
+  source-dirs: app/
+  dependencies:
+  - eleanor
+  - size-based
+  - testing-feat
+  - lazy-search

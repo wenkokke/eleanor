@@ -10,6 +10,8 @@ import Prelude hiding (lookup)
 import Control.Enumerable
 import Control.Monad.Supply (MonadSupply(..), Supply, evalSupply)
 import Control.Search
+import Test.Feat (Enumerate)
+
 
 
 -- * Finite types and contexts
@@ -42,7 +44,7 @@ instance Fin n => Fin (S n) where
 -- * Types and terms
 
 data Type
-  = Z
+  = Void
   | Type :-> Type
   deriving (Typeable, Eq, Show)
 
@@ -52,12 +54,14 @@ data Term n
   | App (Term n) (Term n) Type
   deriving (Typeable)
 
+closed :: Enumerate (Term Z)
+closed = global
 
 -- * Enumerating types and terms
 
 instance Enumerable Type where
   enumerate = share $ aconcat
-    [ pay (c0 Z)
+    [ pay (c0 Void)
     , pay (c2 (:->))
     ]
 

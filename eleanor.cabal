@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 69dfc3cc33676d20d0825e74bf57178ba04340eb1a5f7d15d311433b16a8bd8b
+-- hash: db654d3c931e8d39b0d6e4f18ebc266d211130262481567e1941d4dfb10c4011
 
 name:           eleanor
 version:        0.1.0.0
@@ -26,6 +26,7 @@ source-repository head
 
 library
   exposed-modules:
+      LLAM.Duregård
       LLAM.Naive
       STLC.Duregård
       STLC.Unification
@@ -36,10 +37,32 @@ library
   build-depends:
       QuickCheck
     , base >=4.7 && <5
+    , containers
     , lazy-search
     , monad-supply
     , mtl
     , size-based
     , testing-feat
+    , transformers
+    , vector
+  default-language: Haskell2010
+
+executable eleanor
+  main-is: Main.hs
+  other-modules:
+      Paths_eleanor
+  hs-source-dirs:
+      app/
+  build-depends:
+      QuickCheck
+    , base >=4.7 && <5
+    , containers
+    , eleanor
+    , lazy-search
+    , monad-supply
+    , mtl
+    , size-based
+    , testing-feat
+    , transformers
     , vector
   default-language: Haskell2010
