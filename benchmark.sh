@@ -28,7 +28,7 @@ then
     echo "benchmark: output file needed"
     exit
 fi
-if [ "$lower" -ge "$upper" ]
+if [ "$lower" -gt "$upper" ]
 then
     echo "benchmark: lower bound >= upper bound"
     exit
