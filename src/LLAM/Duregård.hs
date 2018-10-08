@@ -1,10 +1,8 @@
 module LLAM.Duregård where
 
-import Data.Coolean
 import Data.IntMap (IntMap)
 import qualified Data.IntMap as IM
 import STLC.Duregård hiding (check)
-import Control.Monad.Trans.State.Strict (State, get, put, modify, withState, evalState)
 
 check :: Fin n => IntMap Type -> Type -> Term n -> Bool
 check env a t = snd (go env a t)

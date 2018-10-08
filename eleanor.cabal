@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: db654d3c931e8d39b0d6e4f18ebc266d211130262481567e1941d4dfb10c4011
+-- hash: a61840250ce5db4eb9202186c7395c08066c6bd1a064ac30f27b5f31dc9aa0a5
 
 name:           eleanor
 version:        0.1.0.0
@@ -43,8 +43,6 @@ library
     , mtl
     , size-based
     , testing-feat
-    , transformers
-    , vector
   default-language: Haskell2010
 
 executable eleanor
@@ -63,6 +61,4 @@ executable eleanor
     , mtl
     , size-based
     , testing-feat
-    , transformers
-    , vector
   default-language: Haskell2010
