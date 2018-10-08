@@ -115,10 +115,7 @@ main = do
     Untyped ->
       case action of
         Print -> print untyped
-        Count ->
-          case strategy of
-            Feat -> print . length $ untyped
-            Neat -> print . sum . map fst . take size . valuesWith $ STLC.closed
+        Count -> print . length $ untyped
     SimplyTyped ->
       case strategy of
         Feat ->
