@@ -499,8 +499,6 @@ sys   0m  3.950s  -- but better than anything I've written
 
 # I tried, it was
 
-[.code-highlight: 15-17]
-
 ``` haskell
 check :: Fin n => [(n, Type)] -> Type -> Term n -> Bool
 check env a         (Var x)     = env == [(x, a)]
@@ -575,6 +573,10 @@ sys	  0m  0.264s
 
 ---
 
+![](speedup.png)
+
+---
+
 # Future work
 
 Can we make some BCI terms and translate them?
@@ -594,7 +596,7 @@ Can we use the structure of linear lambdas to prune our search space?
 
 ---
 
-# ~~Future~~ Current work
+# Current work
 
 Oh, right, I was testing a Rust library!
 
@@ -602,7 +604,8 @@ Let's see if that works now...
 
 ---
 
-# [fit] Abrupt ending.
+# [fit] Oh no!
+# [fit] I'm out of time!
 
 ---
 
@@ -610,5 +613,5 @@ Let's see if that works now...
 
 1. generating random lambdas is hard
 2. there are some cool libraries out there to help you
-3. most tooling doesn't work for linear lambdas
-4. everything sucks
+3. ~~most tooling doesn't work for linear lambdas~~
+4. ~~everything sucks~~

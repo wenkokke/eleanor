@@ -24,3 +24,8 @@
 --system Linear --strategy Feat,23,300.69
 --system Linear --strategy Feat,24,1037.11
 --system Linear --strategy Feat,25,3466.39
+--system Linear --strategy Feat --projection,26,11585.9066368
+--system Linear --strategy Feat --projection,27,38724.2152778
+--system Linear --strategy Feat --projection,28,129430.082245
+--system Linear --strategy Feat --projection,29,432601.308243
+--system Linear --strategy Feat --projection,30,1445907.23152
