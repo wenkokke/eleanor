@@ -4,7 +4,7 @@
 
 ---
 
-![Me, reading a cool paper by Simon Fowler](cat-reading.jpg)
+![](cat-reading.jpg)
 
 ### Me, reading *"Session Types without Tiers"* by *Fowler et al.*
 
@@ -23,7 +23,7 @@ $$
 
 ---
 
-![Me, working on my Rust library](cat-typing.jpg)
+![](cat-typing.jpg)
 
 ### Me, implementing *"Session Types without Tiers"* in *Rust*.
 
@@ -49,7 +49,7 @@ $$
 
 ---
 
-![Me, confusing](cat-confusing.jpg)
+![](cat-confusing.jpg)
 
 ## They look the same.
 
@@ -75,7 +75,7 @@ fn ping_works() {
 
 ---
 
-![Me, confusing](cat-confusing.jpg)
+![](cat-confusing.jpg)
 
 ## Well that sounds ok.
 
@@ -103,29 +103,75 @@ fn ping_works() {
 
 ---
 
-![QuickChek](quickchek.png)
+![](quickchek.png)
 
 # [fit] No, not that one.
 
 ---
 
-![QuickCheck](quickcheck.png)
+![](quickcheck.png)
 
 # [fit] Yes, thank you.
 
 ---
 
+# What is this "QuickCheck" you speak of?
+
+---
+
+# QuickCheck 101
+
+You write...
+
+``` haskell
+import Test.QuickCheck
+
+prop_revapp :: [Int] -> [Int] -> Bool
+prop_revapp xs ys = reverse (xs ++ ys) == reverse ys ++ reverse xs
+```
+
+You test...
+
+```
+>>> quickCheck prop_revapp
++++ OK, passed 100 tests. 
+```
+
+---
+
+# QuickCheck 102
+
+QuickCheck knows how to make random numbers...
+
+``` haskell
+instance Arbitrary Int where
+    arbitrary = choose (minBound, maxBound)
+                -- ^ pick number between -2^29 and 2^29-1
+    
+instance Arbitrary a => Arbitrary [a] where
+    arbitrary = do n <- arbitrary
+                   replicateM n arbitrary
+                -- ^ pick arbitrary length n
+                --   pick n things of type a
+```
+
+---
+
+# So now we all know _exactly_ how QuickCheck works...
+
+---
+
 # My good plan:
 
-1. make some lambdas
-2. eval them lambdas
-3. translate them to rust
-4. eval them rust
+1. make some programs
+2. run them programs
+3. translate them to Rust
+4. run them in Rust
 5. see if they same
 
 ---
 
-# QuickCheck, please make some lambdas?
+# QuickCheck, please make some programs?
 
 > "There is no generic arbitrary implementation included because we don't know how to make a high-quality one. If you want one, consider using the `testing-feat` or `generic-random` packages."
 -- xoxo QuickCheck
@@ -153,11 +199,11 @@ instance Arbitrary Term where
 
 ---
 
-![Fine, I'll write one!](fine-I'll-write-one.png)
+![](fine-I'll-write-one.png)
 
 ## `Lam ">h" (Var "\EOT\NAKW")`
 
-# Oh.
+# Oh no! :disappointed:
 
 ---
 
@@ -197,7 +243,7 @@ instance Arbitrary n => Arbitrary (Term n) where
 
 ---
 
-![Eugh, I guess I'll do some thinking](guess-I'll-do-some-thinking.png)
+![](guess-I'll-do-some-thinking.png)
 
 ## `Lam (Lam (Var (FS FZ)))`
 
@@ -244,37 +290,37 @@ newtype WellTyped n = WellTyped (Term n)
 instance Arbitrary WellTyped Z where
     arbitrary = do
         a <- arbitrary -- an arbitrary type
-        t <- arbitrary -- an arbitrary ~closed~ term
+        t <- arbitrary -- an arbitrary *closed* term
         if check [] t a then WellTyped t else arbitrary
 ```
 
 ---
 
-![Only the well-typed ones plz?](only-the-well-typed-ones-plz.png)
+![](only-the-well-typed-ones-plz.png)
 
-## `...`
+# `...`
 
 # Uh?
 
 ---
 
-![Only the well-typed ones plz?](only-the-well-typed-ones-plz.png)
+![](only-the-well-typed-ones-plz.png)
 
-## `...`
+# `...`
 
 # What's going on?
 
 ---
 
-![Only the well-typed ones plz?](only-the-well-typed-ones-plz.png)
+![](only-the-well-typed-ones-plz.png)
 
-## `...`
+# `...`
 
 # Why is nothing happening?
 
 ---
 
-![Only the well-typed ones plz?](only-the-well-typed-ones-plz.png)
+![](only-the-well-typed-ones-plz.png)
 
 # [fit] Halp?!
 
@@ -284,18 +330,16 @@ instance Arbitrary WellTyped Z where
 
 ---
 
-![Generating Constrained Random Datawith Uniform Distribution](generating-constrained-data.png)
+![](generating-constrained-data.png)
 
-# Koen Claessen.
-# No surprise there...
+# Koen made QuickCheck, so... not surprised?
 
 ---
 
 ![fit](thesis-palka.png)
 ![fit](thesis-duregard.png)
 
-# ...
-# And two of his students...
+# ...and the other two authors are his students
 
 ---
 
@@ -317,7 +361,7 @@ instance Arbitrary WellTyped Z where
 # [fit] Really gross stuff 
 # [fit] to ensure sharing
 
-## (Hint: it's encapsulated global state)
+## (hint: it's encapsulated global state)
 
 ---
 
@@ -342,15 +386,15 @@ instance Enumerable n => Enumerable (Term n) where
 # [fit] Does it work out of the box?
 
 ``` haskell
--- get me the lambdas of size <30
+-- get me all programs of size <30
 $ eleanor --system Untyped --action Print --size 30
 [Lam (Var FZ), Lam (Lam (Var FZ)), Lam (Lam (Var (FS (FZ)))), ...]
 
--- how many lambdas of size <30?
+-- how many programs of size <30?
 $ eleanor --system Untyped --action Count --size 30
 7964948391145
 
--- how many lambdas of size <100?
+-- how many programs of size <100?
 $ eleanor --system Untyped --action Count --size 100
 4503787720194931500936021688288566428450647198899831131920
 ```
@@ -360,7 +404,7 @@ $ eleanor --system Untyped --action Count --size 100
 # [fit] Does it work out of the box?
 
 ``` haskell
--- how many lambdas of size <1000?
+-- how many programs of size <1000?
 $ eleanor --system Untyped --size 1000 
 308979047539797286389554754656050850905240507708427967498701817852887971931069975365901
 857378119631500575402859069294978611884417142648912870521418834178736010885629562442174
@@ -387,11 +431,11 @@ univ :: (a -> Bool) -> (b -> a) -> Maybe Bool
 univ pred val = unsafePerformIO $ 
     Just (pred (val undefined)) `catch` \err -> Nothing
     
--- will this lambda work out?
+-- will this program ever be well-typed?
 > univ (check [] Void) (\hole -> Lam hole)
 Just False -- no
 
--- will this lambda work out?
+-- will this program ever be well-typed?
 > univ (check [] (Void :-> Void)) (\hole -> Lam hole)
 Nothing -- dunno?
 ```
@@ -408,11 +452,11 @@ Nothing -- dunno?
 # [fit] Does it work out of the box?
 
 ``` haskell
--- get me the lambdas of type Void :-> Void and size <30!
+-- get me the programs of type `Void :-> Void` and size <30!
 $ eleanor --system SimplyTyped --action Print --size 30
 [Lam (Var FZ), Lam (App (Lam (Var FZ)) (Var FZ) Void), ...]
 
--- how many lambdas of type Void :-> Void and size <30?
+-- how many programs of type `Void :-> Void` and size <30?
 $ eleanor --system SimplyTyped --action Count --size 30
 11369362
 
@@ -423,7 +467,7 @@ sys   0m  3.950s  -- but better than anything I've written
 
 ---
 
-![Me, celebrating victory](cat-partying.jpg)
+![](cat-partying.jpg)
 
 # [fit] Problem solved!
 
@@ -433,21 +477,58 @@ sys   0m  3.950s  -- but better than anything I've written
 
 ---
 
-![This is linear](this-is-linear.png)
+# This is linear!
 
-# This is linear
+$$
+\begin{array}{l}
+\mathbf{let} \; s = \mathbf{fork}(\lambda (s : \; !\mathbf{1}.\text{End}).\\
+\qquad \mathbf{let} \; s = \mathbf{send}((), s)\\
+\qquad \mathbf{close}(s)\\
+)\\
+\mathbf{let} \; ((), s) = \mathbf{recv}(s)\\
+\mathbf{close}(s)\\
+\end{array}
+$$
+
+### (i.e. variables must be used exactly once)
 
 ---
 
-![This is affine](this-is-affine.png)
+# This is affine!
 
-# This is affine
+``` rust
+let s = fork!(move |s: Send<(), End>| {
+    let s = send((), s)?;
+    close(s)
+});
+let ((), s) = recv(s)?;
+close(s)
+```
+
+### (i.e. variables can be used at most once)
 
 ---
 
-![This is neither](this-is-neither.png)
+# This is neither!
 
-# This is neither
+``` haskell
+data Type
+    = Void
+    | Type :-> Type
+
+data Term n
+    = Var n
+    | Lam (Term (S n))
+    | App (Term n) (Term n) Type -- this is new!
+
+check :: [Type] -> Type -> Term n -> Bool
+check env a         (Var n)     = lookup env n == a
+check env (a :-> b) (Lam t)     = check (a : env) b t
+check env b         (App f s a) = check env (a :-> b) f && check env a s
+check _   _         _           = False
+```
+
+### (i.e. variables can do *whatever they want!* :scream:)
 
 ---
 
@@ -455,17 +536,23 @@ sys   0m  3.950s  -- but better than anything I've written
 
 ---
 
-# [fit] More research?
+# Idea: generate programs, then take the linear ones?
 
 ---
 
-![How many affine lambdas are linear?](affine-lambdas-and-linear-lambdas.png)
-
-# How many affine lambdas are linear?
+# What proportion of all programs is linear?
 
 ---
 
-# How many affine lambdas are linear?
+# What proportion of *affine* programs is linear?
+
+---
+
+![](affine-lambdas-and-linear-lambdas.png)
+
+---
+
+# What proportion of *affine* programs is linear?
 
 > "Theorem 42.
 > The density of BCI terms among BCK terms equals 0."
@@ -477,7 +564,7 @@ sys   0m  3.950s  -- but better than anything I've written
 
 # [fit] Ok sad :sob:
 
-## Means effectively no lambdas are linear
+### (The chance of getting a linear program goes to zero as we increase program size... and pretty rapidly, actually...)
 
 ---
 
@@ -488,12 +575,40 @@ sys   0m  3.950s  -- but better than anything I've written
 
 ---
 
-# What can we do? Check linearity?
-   
-1. try every possible split of the `env` at every `App`
-   (so each variable *can* only be used once)
-   
-   :x: uh, that sounds expensive?
+# Mission: make `check` check linearity
+
+``` haskell
+data Type
+    = Void
+    | Type :-> Type
+
+data Term n
+    = Var n
+    | Lam (Term (S n))
+    | App (Term n) (Term n) Type -- this is new!
+
+check :: [Type] -> Type -> Term n -> Bool
+check env a         (Var n)     = lookup env n == a
+check env (a :-> b) (Lam t)     = check (a : env) b t
+check env b         (App f s a) = check env (a :-> b) f && check env a s
+check _   _         _           = False
+```
+
+---
+
+# Mission: make `check` check linearity
+
+In a way which is parallelizable?
+
+---
+
+# Mission: make `check` check linearity
+
+In a way which is parallelizable?
+
+## Idea: when checking an application, try every possible split of variables between function and argument?
+
+Uh, that sounds expensive?
 
 ---
 
@@ -521,18 +636,15 @@ $ eleanor --system Linear --strategy Stupid --action Count --size 30
 
 ---
 
-# What can we do? Check linearity?
+# Mission: make `check` check linearity
 
-   
-1. try every possible split of the `env` at every `App`
-   (so each variable *can* only be used once)
-   
-   :x: uh, that sounds expensive?
+In a way which is parallelizable? :x:
 
-2. change the type of `env` to `Map n Type`
-   (so you can track whether stuff has been used)
-   
-   :x: isn't parallelizable or eager!
+In a way which is eager?
+
+## Idea: use some state to keep track of whether a variable has been used yet?
+
+Is that eager? 🤔
 
 ---
 
@@ -559,10 +671,10 @@ check _ _ = do return False
 ```
 ---
 
-# I tried, it's not bad, actually
+# I tried, it's pretty good, actually...
 
 ``` haskell
--- how many linear lambdas of type Void :-> Void and size <30?
+-- how many linear programs of type `Void :-> Void` and size <30?
 $ eleanor --system Linear --action Count --size 30
 9790
 
@@ -589,7 +701,7 @@ Can we make some BCI terms and translate them?
 
 # Future work
 
-Can we use the structure of linear lambdas to prune our search space?
+Can we use the structure of linear programs to prune our search space?
 
 + each term has $$n$$ lambas, $$n$$ vars, and $$n - 1$$ apps
 + kinda hard, probably won't scale well
@@ -611,7 +723,22 @@ Let's see if that works now...
 
 # What have we seen?
 
-1. generating random lambdas is hard
-2. there are some cool libraries out there to help you
-3. ~~most tooling doesn't work for linear lambdas~~
-4. ~~everything sucks~~
+When you write a compiler or library...
+
+  - think about what your thing does
+  - reference and actual implementation
+  - do they do the same stuff???
+  
+# [fit] 🤔
+
+---
+
+# What have we seen?
+
+When you wanna QuickCheck your compiler or library...
+
+  + generating random programs is really hard!
+  + but cool libraries have your back!
+  + even for newfangled linear and affine stuff
+
+# [fit] 🤩
